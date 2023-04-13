@@ -1,0 +1,38 @@
+-- Create the variables
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local ToggleKey = Enum.KeyCode.LeftAlt
+local DistanceThreshold = 10
+local Toggle = false
+
+function aimAtPlayer()
+  spawn(function()
+    while Toggle do task.wait()
+      -- Get nearest player
+      local NearestPlayer = Players:GetNearestPlayerToMouse(DistanceThreshold)
+
+      -- Position mouse to the nearest player's HumanoidRootPart
+      if NearestPlayer then
+        UserInputService:SetMouseLocation(NearestPlayer.Character.HumanoidRootPart.Position)
+      end
+    end
+  end)
+end
+
+UserInputService.InputBegan:Connect(function(Input, GPE)
+  if GPE then return end
+
+  if Input.KeyCode == ToggleKey then
+    Toggle = true
+    aimAtPlayer()
+  end
+end)
+
+UserInputService.InputEnded:Connect(function(Input, GPE)
+  if GPE then return end
+
+  if Input.KeyCode == ToggleKey then
+    Toggle = false
+    aimAtPlayer()
+  end
+end)
